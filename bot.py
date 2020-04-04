@@ -65,6 +65,9 @@
 
 
 
+# from PyQt5 import QtGui
+
+
 
 #!/usr/bin/env python3
 from PyQt5.QtGui import *
@@ -82,12 +85,9 @@ import sys
 
 
 import cv2
-from PIL import ImageOps
-
 from pyautogui import click,press
 from time import sleep
-# from numpy import array
-import numpy as np
+
 
 class Cordinates:
 	replayBtn = (311,282)
@@ -105,48 +105,54 @@ def restartGame():
 
 # #catk-i heravoruteun
 
-box_away_len = 60                
-
+box_away_len = 0
+box_away_width = 125
+box_away_len_counter = 0
 def pressSpace():
+	global box_away_len,box_away_width,box_away_len_counter
+	if box_away_len_counter == 30:
+		box_away_width+=5
+		# box_away_len+=2
+		box_away_len_counter=0
+
 	press('space')
 	# print('Jump')
+	print(box_away_width)
+	box_away_len_counter+=1
 def imageGrab():
-
-
-
 
 	app = QApplication(sys.argv)
 	screen = QApplication.primaryScreen()
-
-	# image_away = screen.grabWindow(
-	# 	QApplication.desktop().winId(), 
-	# 	x = Cordinates.dinosaur[0][0]+box_away_len,
-	# 	y = Cordinates.dinosaur[0][1],
-	# 	width = 120,
-	# 	height = 31).toImage()
-
-
-	# sum_pixel_away = 0
-	# for x in range(0,120):
-	# 	for y in range(0,31):
-	# 		sum_pixel_away += image_away.pixel(x,y)
-
-
 
 	image_away = screen.grabWindow(
 		QApplication.desktop().winId(), 
 		x = Cordinates.dinosaur[0][0]+box_away_len,
 		y = Cordinates.dinosaur[0][1],
-		width = 22,
+		width = box_away_width,
 		height = 31).toImage()
 
 
 	sum_pixel_away = 0
-	for x in range(0,22):
+	for x in range(0,box_away_width):
 		for y in range(0,31):
 			sum_pixel_away += image_away.pixel(x,y)
 
 
+
+	# image_away = screen.grabWindow(
+	# 	QApplication.desktop().winId(), 
+	# 	x = Cordinates.dinosaur[0][0]+box_away_len,
+	# 	y = Cordinates.dinosaur[0][1],
+	# 	width = 22,
+	# 	height = 31).toImage()
+
+
+	# sum_pixel_away = 0
+	# sum_pixel_away_rgb = []
+	# for x in range(0,22):
+	# 	for y in range(0,31):
+	# 		sum_pixel_away += image_away.pixel(x,y)
+	# 		# sum_pixel_away_rgb.append(list(QColor(sum_pixel_away).getRgb()[:-1]))
 
 
 
@@ -155,14 +161,24 @@ def imageGrab():
 	return sum_pixel_away
 
 
-
 def main():
+
 	restartGame()
 	while True:
-		box_away = imageGrab()
-
-		# print(box_away)
-		if box_away != 2928808728582:
+		box = imageGrab()
+		# print(box)
+		if (box // 133127669481) != box_away_width:
 			pressSpace() # catq
 
+		# if box != 2928808728582:
+			# pressSpace() # catq
+
 main()
+
+# 1 = 133127669481
+# 2 = 266255338962
+# 120 = 15975320337720
+# 121 = 16108448007201
+# 122 = 16241575676682
+# 123 = 163'747'033'461'63
+
