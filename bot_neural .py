@@ -1,52 +1,3 @@
-
-
-
-
-
-# # from matplotlib import pyplot as plt
-# img_rgb = array(screenshot(region=(12,229, 611, 100)))
-# # img_rgb = imread('img/mario/map_mario.jpg')
-# img_gray = cvtColor(img_rgb, COLOR_BGR2GRAY)
-# template = imread('img/dino/1_mec.jpg',0)
-	
-# res = matchTemplate(img_gray,template,TM_CCOEFF_NORMED)
-# threshold = 0.8
-# # in modul numpy	
-# loc = where( res >= threshold)
-
-
-# print(loc[1][0],loc[0][0])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 from cv2 import imread,cvtColor,matchTemplate,TM_CCOEFF_NORMED,COLOR_BGR2GRAY
 
 from numpy import where,array
@@ -59,7 +10,7 @@ class Cordinates:
 	dinosaur = ((78,282),(78,313))
 	replayBtn = (311,282)
 	# _map_ = (50,282, 600, 317)
-	_map_ = (55,250, 540, 92)
+	_map_ = (78,275, 517, 92)
 
 
 
@@ -86,10 +37,34 @@ template.append(imread('img/dino/trchun.jpg',0)) # 6
 # game over
 template.append(imread('img/dino/game_over.jpg',0)) # 7
 
-fghfh = False
+dino_down = False
+
+template_dino =  imread('img/dino/dino.jpg',0) # dino
+
+def get_position(region_pos,template_index):
+
+	# from matplotlib import pyplot as plt
+	img_rgb = array(screenshot('get_position.jpg',region = region_pos))
+	# img_rgb = imread('img/mario/map_mario.jpg')
+	img_gray = cvtColor(img_rgb, COLOR_BGR2GRAY)
+
+	res = matchTemplate(img_gray,template_index,TM_CCOEFF_NORMED)
+	threshold = 0.8
+	# in modul numpy	
+	loc = where( res >= threshold)
+	try:
+		return (loc[1][0],loc[0][0])
+	except IndexError:
+		return (-1,-1)
+
+
+# get pos dino
+x,y = get_position(Cordinates._map_, template_dino)
+print(x,y)
+
 
 def imageGrab():
-	global fghfh
+	global dino_down
 	# from matplotlib import pyplot as plt
 	img_rgb = array(screenshot(region=Cordinates._map_))
 	# img_rgb = imread('img/mario/map_mario.jpg')
@@ -98,7 +73,7 @@ def imageGrab():
 	for template_i in range(len(template)):
 		res = matchTemplate(img_gray,template[template_i],TM_CCOEFF_NORMED)
 		threshold = 0.8
-		# in modul numpy	
+		# in modul numpy
 		loc = where( res >= threshold)
 		if len(loc[0]) >= 1:
 			print('mtav')
@@ -106,9 +81,8 @@ def imageGrab():
 			y = loc[0][0]
 			distance = x-Cordinates.dinosaur[0][0]
 			if template_i <= 5:
-				
-				if fghfh == True:
-					fghfh = False
+				if dino_down == True:
+					dino_down = False
 					keyUp('down')
 				select_item_list.append(template_i)
 				if distance <= default_distance[select_item_list[0]]+distance_W[select_item_list[0]]:
@@ -122,7 +96,7 @@ def imageGrab():
 
 				elif y == 20:
 
-					fghfh = True
+					dino_down = True
 					keyDown('down')
 
 			elif template_i == 7:
@@ -166,6 +140,6 @@ def main():
 			print('Game Over')
 			break
 		# fps+=1
-		# break
+		break
 
-main()
+# main()
